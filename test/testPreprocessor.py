@@ -11,7 +11,7 @@ from preprocessor import Preprocessor
 
 def main():
     preprocessor = Preprocessor()
-    # preprocessor.getUserFeature()
+    preprocessor.getUserFeature()
     print("------DONE------")
 
 if __name__ == '__main__':

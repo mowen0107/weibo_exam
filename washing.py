@@ -16,64 +16,62 @@ class Washing():
     '''
 
     def __init__(self):
-        self.originPath = "C:/Users/yl/Desktop/data_mining/Task3/weibo_data/pro3_data/"
-        self.outputPath = "C:/Users/yl/Desktop/data_mining/Task3/weibo_data/temp/"
-        # self.originPath = "/Users/hzt/lab/data_miming/weibo_data/pro3_data/"
-        # self.outputPath = "/Users/hzt/lab/data_miming/weibo_data/temp/"
-        self.trainDataFile = "weibo_train_data2.txt"
-        self.testDataFile = "weibo_predict_data.txt"
+        self.inputDir = "D:/weibo/weibo_exam/data/origin/"
+        self.outputDir = "D:/weibo/weibo_exam/data/washing/"
+        # self.inputDir = "/Users/hzt/lab/data_miming/weibo_data/pro3_data/"
+        # self.outputDir = "/Users/hzt/lab/data_miming/weibo_data/temp/"
 
     def washTrainData(self):
         ''' 进行训练集的清洗
+            删除mid,time,cont列(后面两个暂时用不上)
         '''
-        readFilePath = self.originPath + self.trainDataFile
-        writeFilePath = self.outputPath + self.trainDataFile
-        originTrainData = self.readFile(readFilePath)
-        washedData = []
-        for line in originTrainData:
-            washedLine = self.replaceTable(line)
-            washedData.append(washedLine)
-        self.writeFile(writeFilePath, washedData)
-        self.deleteWrongLines()
-        print("------DONE------")
+        readFilePath = self.inputDir + "weibo_train_data.txt"
+        writeFilePath = self.outputDir + "washed_train_data.txt"
+        nameList = ['uid', 'mid', 'time', 'fcs', 'ccs', 'lcs', 'cont']
+        originTrainData = pd.read_csv(
+            readFilePath, names=nameList, sep='\t', encoding='utf8')
+        washedTrainData = originTrainData.drop(['mid', 'time', 'cont'], axis=1)
+        washedTrainData.to_csv(
+            writeFilePath, index=False, sep='\t', encoding='utf-8')
 
     def washTestData(self):
         ''' 进行测试集的清洗
         '''
-        readFilePath = self.originPath + self.testDataFile
-        writeFilePath = self.outputPath + self.testDataFile
-        originTestData = self.readFile(readFilePath)
-        washedData = []
-        for line in originTestData:
-            washedLine = self.replaceTable(line)
-            washedData.append(washedLine)
-        self.writeFile(writeFilePath, washedData)
-        print("------DONE------")
+        # readFilePath = self.inputDir + self.testDataFile
+        # writeFilePath = self.outputDir + self.testDataFile
+        # originTestData = self.readFile(readFilePath)
+        # washedData = []
+        # for line in originTestData:
+        #     washedLine = self.replaceTable(line)
+        #     washedData.append(washedLine)
+        # self.writeFile(writeFilePath, washedData)
+
         pass
 
     def deleteWrongLines(self):
         ''' 删除无效的行
         '''
-        nameList = ['luid', 'mid', 'time', 'fcs', 'ccs', 'lcs', 'cont']
-        data = pd.read_csv(
-            self.outputPath + self.trainDataFile, sep=',', names=nameList)
-        for index in data.index:
-            # print("------Index:",index,data.loc[index]['fcs'])
-            fcs = data.loc[index]['fcs']
-            ccs = data.loc[index]['ccs']
-            lcs = data.loc[index]['lcs']
-            if pd.isnull(fcs) and pd.isnull(ccs) and pd.isnull(lcs):
-                print("------NA:", index)
-                data.drop(index, axis=0, inplace=True)
-        data.to_csv(
-            self.outputPath + "washedTrainData.txt", index=False, sep=",")
+        pass
+        # nameList = ['luid', 'mid', 'time', 'fcs', 'ccs', 'lcs', 'cont']
+        # data = pd.read_csv(
+        #     self.outputDir + self.trainDataFile, sep=',', names=nameList)
+        # for index in data.index:
+        #     # print("------Index:",index,data.loc[index]['fcs'])
+        #     fcs = data.loc[index]['fcs']
+        #     ccs = data.loc[index]['ccs']
+        #     lcs = data.loc[index]['lcs']
+        #     if pd.isnull(fcs) and pd.isnull(ccs) and pd.isnull(lcs):
+        #         print("------NA:", index)
+        #         data.drop(index, axis=0, inplace=True)
+        # data.to_csv(
+        #     self.outputDir + "washedTrainData.txt", index=False, sep=",")
 
     def addSum(self):
         ''' 求出sum并写入文件中
         '''
-        filePath = self.outputPath + "washedTrainData.txt"
-        newCols = ['luid', 'mid', 'time', 'fcs', 'ccs', 'lcs', 'sum', 'cont']
-        trainData = pd.read_csv(filePath, sep=',', header=0)
+        filePath = self.outputDir + "washed_train_data.txt"
+        newCols = ['uid', 'fcs', 'ccs', 'lcs', 'sum']
+        trainData = pd.read_csv(filePath, sep='\t', header=0, encoding='utf-8')
         trainData['sum'] = trainData.apply(
             lambda x: x['fcs'] + x['ccs'] + x['lcs'], axis=1)
         trainData['fcs'] = trainData['fcs'].astype('int')
@@ -81,7 +79,8 @@ class Washing():
         trainData['lcs'] = trainData['lcs'].astype('int')
         trainData['sum'] = trainData['sum'].astype('int')
         trainData = trainData.ix[:, newCols]
-        trainData.to_csv(self.outputPath + "washedTrainData.txt", index=False, sep=",")
+        trainData.to_csv(
+            self.outputDir + "washed_train_data.txt", index=False, sep="\t")
 
     def readFile(self, filePath):
         ''' 读文件操作，返回一个很大的string

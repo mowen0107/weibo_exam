@@ -17,28 +17,13 @@ class Preprocessor:
     '''
 
     def __init__(self):
-        self.trainDataDir = "C:/Users/yl/Desktop/data_mining/Task3/weibo_data/temp/"
-        # self.trainDataDir = "/Users/hzt/lab/data_miming/weibo_data/temp/"
-        self.trainDataFile = "washedTrainData.txt"
-        self.trainData = self.readTrainData()
-
-    def readTrainData(self):
-        ''' 读取训练集文件,返回pandas格式的Dataframe
-        '''
-        data = None
-        filePath = self.trainDataDir + self.trainDataFile
-        try:
-            data = pd.read_csv(filePath, encoding='utf8', header=0)
-            print("------Length of data:", len(data))
-        except OSError as e:
-            print("------ERROR LOG 打开训练集数据出错:", e)
-            print("------找不到" + filePath + "文件")
-            return None
-        return data
+        self.inputDir = "D:/weibo/weibo_exam/data/washing/"
+        self.outputDir = "D:/weibo/weibo_exam/data/feature/"
+        # self.inputDir = "/Users/hzt/lab/data_miming/weibo_data/temp/"
 
     def getUserFeature(self):
         ''' 得到用户特征，包括各项数值的极值、平均值
-                luid 用户id
+                uid 用户id
                 count 出现的频次
                 max_fcs 最大转发量
                 min_fcs 最小转发量
@@ -55,17 +40,17 @@ class Preprocessor:
                 above_avg_rate 高于平均值的概率
             并写入userfeature.txt
         '''
-        fileName = "userfeature.txt"
-        filePath = self.trainDataDir + fileName
-        trainData = copy.deepcopy(self.trainData)
-        userCount = trainData['luid'].value_counts()
-        userList = copy.deepcopy(userCount.index)
-        userCount.to_csv(
-            self.trainDataDir + "usercount.txt", index=True, sep=',')
+        washedTrainDataPath = self.inputDir + "washed_train_data.txt"
+        userCountPath = self.outputDir + "user_count.txt"
+        userFeaturePath = self.outputDir + "user_feature.txt"
+
+        washedTrainData = pd.read_csv(
+            washedTrainDataPath, header=0, sep='\t', encoding='utf-8')
+        userCount = washedTrainData['uid'].value_counts()
+        userList = userCount.index
+        userCount.to_csv(userCountPath, index=True, sep='\t')
         userFeature = pd.read_csv(
-            self.trainDataDir + "usercount.txt",
-            names=['luid', 'count'],
-            sep=',')
+            userCountPath, names=['uid', 'count'], sep='\t')
         max_fcs_list = []
         min_fcs_list = []
         avg_fcs_list = []
@@ -81,8 +66,8 @@ class Preprocessor:
         i = 0
         for user in userList:
             # 筛选出luid相同的行
-            print("------DEBUG LOG luid:", i, user)
-            subData = trainData.loc[(trainData['luid'] == user)]
+            print("------DEBUG LOG uid:", i, user)
+            subData = washedTrainData.loc[(washedTrainData['uid'] == user)]
             max_fcs = subData['fcs'].max()
             min_fcs = subData['fcs'].min()
             avg_fcs = subData['fcs'].mean()
@@ -121,5 +106,8 @@ class Preprocessor:
         userFeature['min_sum'] = min_sum_list
         userFeature['avg_sum'] = avg_sum_list
         userFeature.to_csv(
-            self.trainDataDir + "userfeature.txt", index=False, sep=',')
+            self.inputDir + "userfeature.txt",
+            index=False,
+            sep='\t',
+            encoding='utf-8')
         return userFeature

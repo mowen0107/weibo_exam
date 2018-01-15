@@ -11,8 +11,7 @@ from washing import Washing
 
 def main():
     washing = Washing()
-    # washing.washTrainData()
-    # washing.washTestData()
+    washing.washTrainData()
     washing.addSum()
     print("------DONE------")
 
