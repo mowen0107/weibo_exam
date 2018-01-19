@@ -94,7 +94,7 @@ class Washing():
             print("------ERROR LOG:", e)
             return None
         finally:
-            if originFile != None:
+            if originFile is not None:
                 originFile.close()
         return originTrainData
 
