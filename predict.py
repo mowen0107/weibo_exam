@@ -27,7 +27,7 @@ class Predict():
             encoding='utf-8')
         self.testData = pd.read_csv(
             self.testDataFile,
-            names=['luid', 'mid', 'time', 'cont'],
+            names=['uid', 'mid', 'time', 'cont'],
             sep='\t',
             encoding='utf-8')
 
@@ -50,7 +50,7 @@ class Predict():
         testdataIndex = self.testData.index
         uf_luid_list = list(self.userFeature.index)
         for index in testdataIndex:
-            td_luid = self.testData.loc[index]['luid']
+            td_luid = self.testData.loc[index]['uid']
             print("------DEBUG LOG :", index, td_luid)
             pre_fcs = 0
             pre_ccs = 0
@@ -80,7 +80,7 @@ class Predict():
         self.testData['ccs'] = ccs_list
         self.testData['lcs'] = lcs_list
         self.testData['sum'] = sum_list
-        newCols = ['luid', 'mid', 'time', 'fcs', 'ccs', 'lcs', 'sum', 'cont']
+        newCols = ['uid', 'mid', 'time', 'fcs', 'ccs', 'lcs', 'sum', 'cont']
         self.testData = self.testData.ix[:, newCols]
         self.testData.to_csv(
             self.resultFile, index=False, sep="\t", encoding='utf-8')
