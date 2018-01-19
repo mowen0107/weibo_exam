@@ -17,22 +17,22 @@ class Predict():
         self.testDataDir = "/Users/hzt/lab/data_miming/weibo_exam/data/origin/"
         self.resultDir = "/Users/hzt/lab/data_miming/weibo_exam/data/result/"
         self.userFeatureFile = self.userFeatureDir + "washed_userfeature.txt"
-        self.testDataFile = self.testDataDir + "washed_test_data.txt"
+        self.testDataFile = self.testDataDir + "weibo_predict_data.txt"
         self.resultFile = self.resultDir + "result.txt"
         self.userFeature = pd.read_csv(
             self.userFeatureFile,
             header=0,
-            sep=',',
+            sep='\t',
             index_col=0,
             encoding='utf-8')
         self.testData = pd.read_csv(
             self.testDataFile,
             names=['luid', 'mid', 'time', 'cont'],
-            sep=',',
+            sep='\t',
             encoding='utf-8')
 
     def test(self):
-        test_luid = 'c60533fdb5278412b14379f693f77dd5'
+        test_luid = '875a4a77b339d93f819e2c4de5bd0b57'
         luid_list = list(self.userFeature.index)
         print(luid_list)
         if test_luid in luid_list:
@@ -83,4 +83,4 @@ class Predict():
         newCols = ['luid', 'mid', 'time', 'fcs', 'ccs', 'lcs', 'sum', 'cont']
         self.testData = self.testData.ix[:, newCols]
         self.testData.to_csv(
-            self.resultFile, index=False, sep=",", encoding='utf-8')
+            self.resultFile, index=False, sep="\t", encoding='utf-8')
