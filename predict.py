@@ -13,9 +13,9 @@ import errno
 
 class Predict():
     def __init__(self):
-        self.userFeatureDir = "/Users/hzt/lab/data_miming/weibo_data/temp/userfeature/"
-        self.testDataDir = "/Users/hzt/lab/data_miming/weibo_data/temp/testdata/"
-        self.resultDir = "/Users/hzt/lab/data_miming/weibo_data/temp/result/"
+        self.userFeatureDir = "/Users/hzt/lab/data_miming/weibo_exam/data/userfeature/"
+        self.testDataDir = "/Users/hzt/lab/data_miming/weibo_exam/data/origin/"
+        self.resultDir = "/Users/hzt/lab/data_miming/weibo_exam/data/result/"
         self.userFeatureFile = self.userFeatureDir + "washed_userfeature.txt"
         self.testDataFile = self.testDataDir + "washed_test_data.txt"
         self.resultFile = self.resultDir + "result.txt"
